@@ -39,7 +39,7 @@ matplotlib==3.4.3
 matplotlib-inline==0.1.2
 mpmath==1.2.1
 numexpr==2.7.3
-numpy==1.19.5
+numpy==1.22.2
 oauthlib==3.1.1
 opt-einsum==3.3.0
 packaging==21.0
