@@ -13,7 +13,7 @@ from sympy.geometry.point import Point, Point2D
 from sympy.geometry.line import Line, Line2D, Ray2D, Segment2D, LinearEntity3D
 from sympy.geometry.ellipse import Ellipse
 from sympy.functions import sign
-from sympy.simplify import simplify
+from sympy.simplify.simplify import simplify
 from sympy.solvers.solvers import solve
 
 
@@ -365,7 +365,7 @@ class Parabola(GeometrySet):
         See Also
         ========
 
-        http://www.sparknotes.com/math/precalc/conicsections/section2.rhtml
+        https://www.sparknotes.com/math/precalc/conicsections/section2/
 
         Examples
         ========

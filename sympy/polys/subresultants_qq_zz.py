@@ -336,7 +336,7 @@ def sylvester(f, g, x, method = 1):
         return M
 
     # Sylvester's matrix of 1853 (a.k.a sylvester2)
-    if method >= 2:
+    else:
         if len(fp) < len(gp):
             h = []
             for i in range(len(gp) - len(fp)):
@@ -545,7 +545,7 @@ def res(f, g, x):
 
     """
     if f == 0 or g == 0:
-         raise PolynomialError("The resultant of %s and %s is not defined" % (f, g))
+        raise PolynomialError("The resultant of %s and %s is not defined" % (f, g))
     else:
         return sylvester(f, g, x, 1).det()
 
@@ -1798,7 +1798,7 @@ def rem_z(p, q, x):
     Obtained in Finding the Greatest Common Divisor of Two Polynomials.''
     Serdica Journal of Computing, 9(2) (2015), 123-138.
 
-    2. http://planetMath.org/sturmstheorem
+    2. https://planetMath.org/sturmstheorem
 
     3. Akritas, A. G., G.I. Malaschonok and P.S. Vigklas: ``A Basic Result on
     the Theory of Subresultants.'' Serdica Journal of Computing 10 (2016), No.1, 31-48.

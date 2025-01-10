@@ -22,6 +22,9 @@ lti
 .. autoclass:: TransferFunctionMatrix
    :members:
 
+.. autoclass:: PIDController
+   :members:
+
 .. autoclass:: MIMOSeries
    :members:
 
@@ -31,4 +34,13 @@ lti
 .. autoclass:: MIMOFeedback
    :members:
 
+.. autoclass:: StateSpace
+   :members:
+
+.. autofunction:: gbt
+
 .. autofunction:: bilinear
+
+.. autofunction:: forward_diff
+
+.. autofunction:: backward_diff

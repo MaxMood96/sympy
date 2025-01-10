@@ -1,14 +1,17 @@
 #!/usr/bin/env python
 
 import os
+import stat
 import json
 from subprocess import check_output
 from collections import OrderedDict, defaultdict
 from collections.abc import Mapping
 import glob
 from contextlib import contextmanager
+from getpass import getpass
 
 import requests
+from requests.auth import HTTPBasicAuth
 from requests_oauthlib import OAuth2
 
 
@@ -319,8 +322,8 @@ def query_GitHub(url, username=None, password=None, token=None, data=None,
         headers['X-GitHub-OTP'] = OTP
 
     if token:
-        auth = OAuth2(client_id=username, token=dict(access_token=token,
-            token_type='bearer'))
+        auth = OAuth2(client_id=username, token={"access_token": token,
+            "token_type": 'bearer'})
     else:
         auth = HTTPBasicAuth(username, password)
     if data:

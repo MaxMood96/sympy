@@ -34,12 +34,15 @@ git_whitelist = {
     '.mailmap',
     # CI
     '.github/PULL_REQUEST_TEMPLATE.md',
+    '.github/dependabot.yml',
     '.github/workflows/runtests.yml',
+    '.github/workflows/emscripten.yml',
     '.github/workflows/ci-sage.yml',
     '.github/workflows/comment-on-pr.yml',
     '.github/workflows/release.yml',
     '.github/workflows/docs-preview.yml',
     '.github/workflows/checkconflict.yml',
+    '.github/workflows/nightly-wheels.yml',
     '.ci/durations.json',
     '.ci/generate_durations_log.sh',
     '.ci/parse_durations_log.py',
@@ -49,16 +52,19 @@ git_whitelist = {
     '.github/FUNDING.yml',
     '.editorconfig',
     '.coveragerc',
+    '.flake8',
     'CODEOWNERS',
     'asv.conf.actions.json',
     'codecov.yml',
-    'pytest.ini',
+    'requirements-dev.txt',
     'MANIFEST.in',
     'banner.svg',
     # Code of conduct
     'CODE_OF_CONDUCT.md',
     # Contributing guide
     'CONTRIBUTING.md',
+    # Citation config
+    'CITATION.cff',
     # Nothing from bin/ should be shipped unless we intend to install it. Most
     # of this stuff is for development anyway. To run the tests from the
     # tarball, use setup.py test, or import sympy and run sympy.test() or
@@ -94,7 +100,6 @@ git_whitelist = {
     'bin/mailmap_check.py',
     'bin/test_symengine.py',
     'bin/test_tensorflow.py',
-    'bin/test_pyodide.mjs',
     # The notebooks are not ready for shipping yet. They need to be cleaned
     # up, and preferably doctested.  See also
     # https://github.com/sympy/sympy/issues/6039.
@@ -130,11 +135,9 @@ git_whitelist = {
     'release/sha256.py',
     'release/authors.py',
     'release/ci_release_script.sh',
-    # This is just a distribute version of setup.py. Used mainly for setup.py
-    # develop, which we don't care about in the release tarball
-    'setupegg.py',
     # pytest stuff
     'conftest.py',
+    'requirements-dev.txt',
     }
 
 # Files that should be in the tarball should not be in git
@@ -188,7 +191,7 @@ def compare_tar_against_git(tarname, gitroot):
 
     See the bottom of the file for the whitelists.
     """
-    git_lsfiles = set(i.strip() for i in run('git', 'ls-files', cwd=gitroot))
+    git_lsfiles = {i.strip() for i in run('git', 'ls-files', cwd=gitroot)}
     tar_output_orig = set(run('tar', 'tf', tarname))
     tar_output = set()
     for file in tar_output_orig:

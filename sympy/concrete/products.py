@@ -184,7 +184,7 @@ class Product(ExprWithIntLimits):
 
     .. [1] Michael Karr, "Summation in Finite Terms", Journal of the ACM,
            Volume 28 Issue 2, April 1981, Pages 305-350
-           http://dl.acm.org/citation.cfm?doid=322248.322255
+           https://dl.acm.org/doi/10.1145/322248.322255
     .. [2] https://en.wikipedia.org/wiki/Multiplication#Capital_Pi_notation
     .. [3] https://en.wikipedia.org/wiki/Empty_product
     """
@@ -284,11 +284,6 @@ class Product(ExprWithIntLimits):
             return f.doit(**hints)
         else:
             return powsimp(f)
-
-    def _eval_adjoint(self):
-        if self.is_commutative:
-            return self.func(self.function.adjoint(), *self.limits)
-        return None
 
     def _eval_conjugate(self):
         return self.func(self.function.conjugate(), *self.limits)
@@ -544,7 +539,7 @@ class Product(ExprWithIntLimits):
 
         .. [1] Michael Karr, "Summation in Finite Terms", Journal of the ACM,
                Volume 28 Issue 2, April 1981, Pages 305-350
-               http://dl.acm.org/citation.cfm?doid=322248.322255
+               https://dl.acm.org/doi/10.1145/322248.322255
 
         """
         l_indices = list(indices)

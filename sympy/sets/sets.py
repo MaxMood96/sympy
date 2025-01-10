@@ -1,6 +1,9 @@
-from typing import Any, Callable
+from __future__ import annotations
+
+from typing import Any, Callable, TYPE_CHECKING, overload
 from functools import reduce
 from collections import defaultdict
+from collections.abc import Mapping, Iterable
 import inspect
 
 from sympy.core.kind import Kind, UndefinedKind, NumberKind
@@ -57,7 +60,7 @@ class Set(Basic, EvalfMixin):
     :class:`EmptySet` class and available as a singleton as ``S.EmptySet``.
     """
 
-    __slots__ = ()
+    __slots__: tuple[()] = ()
 
     is_number = False
     is_iterable = False
@@ -86,6 +89,38 @@ class Set(Basic, EvalfMixin):
     )
     def is_EmptySet(self):
         return None
+
+    if TYPE_CHECKING:
+
+        def __new__(cls, *args: Basic | complex) -> Set:
+            ...
+
+        @overload # type: ignore
+        def subs(self, arg1: Mapping[Basic | complex, Set | complex], arg2: None=None) -> Set: ...
+        @overload
+        def subs(self, arg1: Iterable[tuple[Basic | complex, Set | complex]], arg2: None=None, **kwargs: Any) -> Set: ...
+        @overload
+        def subs(self, arg1: Set | complex, arg2: Set | complex) -> Set: ...
+        @overload
+        def subs(self, arg1: Mapping[Basic | complex, Basic | complex], arg2: None=None, **kwargs: Any) -> Basic: ...
+        @overload
+        def subs(self, arg1: Iterable[tuple[Basic | complex, Basic | complex]], arg2: None=None, **kwargs: Any) -> Basic: ...
+        @overload
+        def subs(self, arg1: Basic | complex, arg2: Basic | complex, **kwargs: Any) -> Basic: ...
+
+        def subs(self, arg1: Mapping[Basic | complex, Basic | complex] | Basic | complex, # type: ignore
+                 arg2: Basic | complex | None = None, **kwargs: Any) -> Basic:
+            ...
+
+        def simplify(self, **kwargs) -> Set:
+            assert False
+
+        def evalf(self, n: int = 15, subs: dict[Basic, Basic | float] | None = None,
+                  maxn: int = 100, chop: bool = False, strict: bool  = False,
+                  quad: str | None = None, verbose: bool = False) -> Set:
+            ...
+
+        n = evalf
 
     @staticmethod
     def _infimum_key(expr):
@@ -352,14 +387,34 @@ class Set(Basic, EvalfMixin):
         return b
 
     def _contains(self, other):
-        raise NotImplementedError(filldedent('''
-            (%s)._contains(%s) is not defined. This method, when
-            defined, will receive a sympified object. The method
-            should return True, False, None or something that
-            expresses what must be true for the containment of that
-            object in self to be evaluated. If None is returned
-            then a generic Contains object will be returned
-            by the ``contains`` method.''' % (self, other)))
+        """Test if ``other`` is an element of the set ``self``.
+
+        This is an internal method that is expected to be overridden by
+        subclasses of ``Set`` and will be called by the public
+        :func:`Set.contains` method or the :class:`Contains` expression.
+
+        Parameters
+        ==========
+
+        other: Sympified :class:`Basic` instance
+            The object whose membership in ``self`` is to be tested.
+
+        Returns
+        =======
+
+        Symbolic :class:`Boolean` or ``None``.
+
+        A return value of ``None`` indicates that it is unknown whether
+        ``other`` is contained in ``self``. Returning ``None`` from here
+        ensures that ``self.contains(other)`` or ``Contains(self, other)`` will
+        return an unevaluated :class:`Contains` expression.
+
+        If not ``None`` then the returned value is a :class:`Boolean` that is
+        logically equivalent to the statement that ``other`` is an element of
+        ``self``. Usually this would be either ``S.true`` or ``S.false`` but
+        not always.
+        """
+        raise NotImplementedError(f"{type(self).__name__}._contains")
 
     def is_subset(self, other):
         """
@@ -905,9 +960,9 @@ ProductSet(iterable) is deprecated. Use ProductSet(*iterable) instead.
             return None
 
         if not isinstance(element, Tuple) or len(element) != len(self.sets):
-            return False
+            return S.false
 
-        return fuzzy_and(s._contains(e) for s, e in zip(self.sets, element))
+        return And(*[s.contains(e) for s, e in zip(self.sets, element)])
 
     def as_relational(self, *symbols):
         symbols = [_sympify(s) for s in symbols]
@@ -1201,7 +1256,7 @@ class Interval(Set):
 
         if self.start is S.NegativeInfinity and self.end is S.Infinity:
             if other.is_real is not None:
-                return other.is_real
+                return tfn[other.is_real]
 
         d = Dummy()
         return self.as_relational(d).subs(d, other)
@@ -1474,8 +1529,9 @@ class Intersection(Set, LatticeOp):
     def zero(self):
         return S.EmptySet
 
-    def __new__(cls, *args, **kwargs):
-        evaluate = kwargs.get('evaluate', global_parameters.evaluate)
+    def __new__(cls, *args , evaluate=None):
+        if evaluate is None:
+            evaluate = global_parameters.evaluate
 
         # flatten inputs to merge intersections and iterables
         args = list(ordered(set(_sympify(args))))
@@ -1689,7 +1745,7 @@ class Complement(Set):
     References
     ==========
 
-    .. [1] http://mathworld.wolfram.com/ComplementSet.html
+    .. [1] https://mathworld.wolfram.com/ComplementSet.html
     """
 
     is_Complement = True
@@ -2025,12 +2081,11 @@ class FiniteSet(Set):
 
         """
         if other in self._args_set:
-            return True
+            return S.true
         else:
             # evaluate=True is needed to override evaluate=False context;
             # we need Eq to do the evaluation
-            return fuzzy_or(fuzzy_bool(Eq(e, other, evaluate=True))
-                for e in self.args)
+            return Or(*[Eq(e, other, evaluate=True) for e in self.args])
 
     def _eval_is_subset(self, other):
         return fuzzy_and(other._contains(e) for e in self.args)
@@ -2263,7 +2318,7 @@ class DisjointUnion(Set):
                 iter_flag = iter_flag and set_i.is_iterable
         return iter_flag
 
-    def _eval_rewrite_as_Union(self, *sets):
+    def _eval_rewrite_as_Union(self, *sets, **kwargs):
         """
         Rewrites the disjoint union as the union of (``set`` x {``i``})
         where ``set`` is the element in ``sets`` at index = ``i``
@@ -2299,15 +2354,15 @@ class DisjointUnion(Set):
         Passes operation on to constituent sets
         """
         if not isinstance(element, Tuple) or len(element) != 2:
-            return False
+            return S.false
 
         if not element[1].is_Integer:
-            return False
+            return S.false
 
         if element[1] >= len(self.sets) or element[1] < 0:
-            return False
+            return S.false
 
-        return element[0] in self.sets[element[1]]
+        return self.sets[element[1]]._contains(element[0])
 
     def _kind(self):
         if not self.args:
@@ -2600,7 +2655,7 @@ def simplify_intersection(args):
                 other = Intersection(*other_sets)
                 return Union(*(Intersection(arg, other) for arg in s.args))
             else:
-                return Union(*[arg for arg in s.args])
+                return Union(*s.args)
 
     for s in args:
         if s.is_Complement:
@@ -2734,7 +2789,7 @@ class SetKind(Kind):
     ========
 
     sympy.core.kind.NumberKind
-    sympy.matrices.common.MatrixKind
+    sympy.matrices.kind.MatrixKind
     sympy.core.containers.TupleKind
     """
     def __new__(cls, element_kind=None):

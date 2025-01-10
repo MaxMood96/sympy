@@ -165,7 +165,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
 
     .. [1] Michael Karr, "Summation in Finite Terms", Journal of the ACM,
            Volume 28 Issue 2, April 1981, Pages 305-350
-           http://dl.acm.org/citation.cfm?doid=322248.322255
+           https://dl.acm.org/doi/10.1145/322248.322255
     .. [2] https://en.wikipedia.org/wiki/Summation#Capital-sigma_notation
     .. [3] https://en.wikipedia.org/wiki/Empty_sum
     """
@@ -486,9 +486,9 @@ class Sum(AddWithLimits, ExprWithIntLimits):
 
         ###  -------- Divergence test ----------- ###
         try:
-           lim_val = limit_seq(sequence_term, sym)
-           if lim_val is not None and lim_val.is_zero is False:
-               return S.false
+            lim_val = limit_seq(sequence_term, sym)
+            if lim_val is not None and lim_val.is_zero is False:
+                return S.false
         except NotImplementedError:
             pass
 
@@ -536,7 +536,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         ratio = combsimp(powsimp(next_sequence_term/sequence_term))
         try:
             lim_ratio = limit_seq(ratio, sym)
-            if lim_ratio is not None and lim_ratio.is_number:
+            if lim_ratio is not None and lim_ratio.is_number and lim_ratio is not S.NaN:
                 if abs(lim_ratio) > 1:
                     return S.false
                 if abs(lim_ratio) < 1:
@@ -858,7 +858,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
 
         .. [1] Michael Karr, "Summation in Finite Terms", Journal of the ACM,
                Volume 28 Issue 2, April 1981, Pages 305-350
-               http://dl.acm.org/citation.cfm?doid=322248.322255
+               https://dl.acm.org/doi/10.1145/322248.322255
         """
         l_indices = list(indices)
 
@@ -1490,7 +1490,7 @@ def eval_sum_residue(f, i_a_b):
         return residue_factor
 
     # We don't know how to deal with symbolic constants in summand
-    if f.free_symbols - set([i]):
+    if f.free_symbols - {i}:
         return None
 
     if not (a.is_Integer or a in (S.Infinity, S.NegativeInfinity)):
@@ -1602,7 +1602,7 @@ def eval_sum_residue(f, i_a_b):
 
 def _eval_matrix_sum(expression):
     f = expression.function
-    for n, limit in enumerate(expression.limits):
+    for limit in expression.limits:
         i, a, b = limit
         dif = b - a
         if dif.is_Integer:
