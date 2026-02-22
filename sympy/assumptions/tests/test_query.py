@@ -1757,7 +1757,12 @@ def test_nonzero():
     assert ask(Q.nonzero(x*y), Q.nonzero(x)) is None
     assert ask(Q.nonzero(x*y), Q.nonzero(x) & Q.nonzero(y)) is True
 
-    assert ask(Q.nonzero(x**y), Q.nonzero(x)) is True
+    assert ask(Q.nonzero(Pow(x, y), Q.nonzero(x))) is None
+    assert ask(Q.nonzero(Pow(x, y)), Q.positive(x) & Q.real(y)) is True
+    assert ask(Q.nonzero(Pow(5, 2*I*n*pi)), Q.integer(n)) is False
+    assert ask(Q.nonzero(Pow(0, x)), Q.positive(x)) is False
+    assert ask(Q.nonzero(Pow(5, I*n), Q.integer(n))) is None
+    assert ask(Q.nonzero(Pow(-1, x)), Q.real(x)) is None
 
     assert ask(Q.nonzero(Abs(x))) is None
     assert ask(Q.nonzero(Abs(x)), Q.nonzero(x)) is True
