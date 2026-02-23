@@ -189,7 +189,11 @@ def _(expr, assumptions):
 @NonZeroPredicate.register(Pow)
 def _(expr, assumptions):
     return fuzzy_and([
-        ask(Q.nonzero(expr.base), assumptions), ask(Q.real(expr), assumptions)
+        fuzzy_or([
+            ask(Q.nonzero(expr.base), assumptions),
+            ask(Q.zero(expr.exp), assumptions)
+        ]),
+        ask(Q.real(expr), assumptions)
     ])
 
 @NonZeroPredicate.register(Abs)
