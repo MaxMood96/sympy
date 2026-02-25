@@ -1,3 +1,4 @@
+from __future__ import annotations
 from sympy.utilities.misc import as_int
 
 

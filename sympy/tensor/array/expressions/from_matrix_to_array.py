@@ -1,3 +1,4 @@
+from __future__ import annotations
 from sympy import KroneckerProduct, Add
 from sympy.core.basic import Basic
 from sympy.core.function import Lambda

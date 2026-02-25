@@ -1,4 +1,5 @@
 """Implementation of :class:`FiniteField` class. """
+from __future__ import annotations
 
 import operator
 from types import ModuleType

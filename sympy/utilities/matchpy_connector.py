@@ -2,6 +2,7 @@
 The objects in this module allow the usage of the MatchPy pattern matching
 library on SymPy expressions.
 """
+from __future__ import annotations
 import re
 from typing import List, Callable, NamedTuple, Any, Dict
 

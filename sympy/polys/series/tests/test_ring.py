@@ -1,3 +1,4 @@
+from __future__ import annotations
 from sympy.core.symbol import symbols
 from sympy.series.order import O
 from sympy.polys.domains import ZZ, QQ
