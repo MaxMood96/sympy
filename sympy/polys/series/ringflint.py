@@ -20,6 +20,8 @@ if TYPE_CHECKING:
     from sympy.external.gmpy import FMPQ_SERIES as fmpq_series
     from sympy.external.gmpy import FMPZ_POLY as fmpz_poly
     from sympy.external.gmpy import FMPZ_SERIES as fmpz_series
+    ZZSeries = fmpz_series | fmpz_poly
+    QQSeries = fmpq_series | fmpq_poly
 elif GROUND_TYPES == "flint":
     from flint import fmpq_poly, fmpq_series, fmpz_poly, fmpz_series, ctx
     from flint.utils.flint_exceptions import DomainError
@@ -32,11 +34,11 @@ elif GROUND_TYPES == "flint":
     _major, _minor, *_ = flint.__version__.split(".")
     if (int(_major), int(_minor)) >= (0, 8):
         _require_flint_version = True
+    ZZSeries = fmpz_series | fmpz_poly
+    QQSeries = fmpq_series | fmpq_poly
 else:
     fmpq_poly = fmpq_series = fmpz_poly = fmpz_series = ctx = None
-
-ZZSeries = fmpz_series | fmpz_poly
-QQSeries = fmpq_series | fmpq_poly
+    ZZSeries = QQSeries = None
 
 
 def _get_series_precision(s: fmpz_series | fmpq_series) -> int:
