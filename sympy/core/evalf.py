@@ -3,7 +3,7 @@ Adaptive numerical evaluation of SymPy expressions, using mpmath
 for mathematical functions.
 """
 from __future__ import annotations
-from typing import Callable, TYPE_CHECKING, Any, overload, Type
+from typing import Callable, TYPE_CHECKING, Any, overload
 
 import math
 
@@ -1393,7 +1393,7 @@ def evalf_symbol(x: Expr, prec: int, options: OPT_DICT) -> TMP_RES:
         cache[x] = (v, prec)
         return v
 
-evalf_table: dict[Type[Expr], Callable[[Expr, int, OPT_DICT], TMP_RES]] = {}
+evalf_table: dict[type[Expr], Callable[[Expr, int, OPT_DICT], TMP_RES]] = {}
 
 
 def _create_evalf_table():

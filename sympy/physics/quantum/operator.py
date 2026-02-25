@@ -9,7 +9,6 @@ TODO:
   AntiCommutator, represent, apply_operators.
 """
 from __future__ import annotations
-from typing import Optional
 
 from sympy.core.add import Add
 from sympy.core.expr import Expr
@@ -106,8 +105,8 @@ class Operator(QExpr):
     .. [1] https://en.wikipedia.org/wiki/Operator_%28physics%29
     .. [2] https://en.wikipedia.org/wiki/Observable
     """
-    is_hermitian: Optional[bool] = None
-    is_unitary: Optional[bool] = None
+    is_hermitian: bool | None = None
+    is_unitary: bool | None = None
     @classmethod
     def default_args(self):
         return ("O",)

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
-from typing import Sequence, Union, TYPE_CHECKING
+from typing import Sequence, TYPE_CHECKING
 
 from sympy.polys.densebasic import dup, dup_reverse
 from sympy.polys.domains import Domain, QQ, ZZ
@@ -35,8 +35,8 @@ elif GROUND_TYPES == "flint":
 else:
     fmpq_poly = fmpq_series = fmpz_poly = fmpz_series = ctx = None
 
-ZZSeries = Union[fmpz_series, fmpz_poly]
-QQSeries = Union[fmpq_series, fmpq_poly]
+ZZSeries = fmpz_series | fmpz_poly
+QQSeries = fmpq_series | fmpq_poly
 
 
 def _get_series_precision(s: fmpz_series | fmpq_series) -> int:
