@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import operator
-from types import ModuleType
 
 from sympy.external.gmpy import GROUND_TYPES
 from sympy.utilities.decorator import doctest_depends_on
@@ -16,6 +15,10 @@ from sympy.polys.galoistools import gf_zassenhaus, gf_irred_p_rabin
 from sympy.polys.polyerrors import CoercionFailed
 from sympy.utilities import public
 from sympy.polys.domains.groundtypes import SymPyInteger
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from types import ModuleType
 
 
 if GROUND_TYPES == 'flint':
