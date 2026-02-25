@@ -1,3 +1,4 @@
+# noqa: I002
 """
 SymPy is a Python library for symbolic mathematics. It aims to become a
 full-featured computer algebra system (CAS) while keeping the code as simple
@@ -13,7 +14,6 @@ See the webpage for more information and documentation:
 
 
 # Keep this in sync with setup.py/pyproject.toml
-from __future__ import annotations
 import sys
 if sys.version_info < (3, 9):
     raise ImportError("Python version 3.9 or above is required for SymPy.")
