@@ -22,6 +22,7 @@ doctest_optionflags = [
 ]
 
 norecursedirs = [
+    ".*",
     "sympy/parsing/autolev/test-examples",
 ]
 
