@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, overload, Literal, Any, cast, Callable
+from typing import TYPE_CHECKING, overload, Literal, Any, cast, Callable
 
 from functools import wraps, reduce
 from operator import mul
@@ -6044,7 +6044,7 @@ def lcm_list(seq, *gens, **args):
     """
     seq = sympify(seq)
 
-    def try_non_polynomial_lcm(seq) -> Optional[Expr]:
+    def try_non_polynomial_lcm(seq) -> Expr | None:
         if not gens and not args:
             domain, numbers = construct_domain(seq)
 

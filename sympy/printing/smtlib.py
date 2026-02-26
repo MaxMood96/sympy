@@ -84,7 +84,7 @@ class SMTLibPrinter(Printer):
 
     symbol_table: dict
 
-    def __init__(self, settings: typing.Optional[dict] = None,
+    def __init__(self, settings: dict | None = None,
                  symbol_table=None):
         settings = settings or {}
         self.symbol_table = symbol_table or {}
@@ -103,7 +103,7 @@ class SMTLibPrinter(Printer):
         if s[0].isnumeric(): return False
         return all(_.isalnum() or _ == '_' for _ in s)
 
-    def _s_expr(self, op: str, args: typing.Union[list, tuple]) -> str:
+    def _s_expr(self, op: str, args: list | tuple) -> str:
         args_str = ' '.join(
             a if isinstance(a, str)
             else self._print(a)
@@ -144,7 +144,7 @@ class SMTLibPrinter(Printer):
             return self._s_expr(not_op, [self._s_expr(eq_op, e.args)])
 
     def _print_Piecewise(self, e: Piecewise):
-        def _print_Piecewise_recursive(args: typing.Union[list, tuple]):
+        def _print_Piecewise_recursive(args: list | tuple):
             e, c = args[0]
             if len(args) == 1:
                 assert (c is True) or isinstance(c, BooleanTrue)
@@ -454,7 +454,7 @@ def smtlib_code(
     ])
 
 
-def _auto_declare_smtlib(sym: typing.Union[Symbol, Function], p: SMTLibPrinter, log_warn: typing.Callable[[str], None]):
+def _auto_declare_smtlib(sym: Symbol | Function, p: SMTLibPrinter, log_warn: typing.Callable[[str], None]):
     if sym.is_Symbol:
         type_signature = p.symbol_table[sym]
         assert isinstance(type_signature, type)
@@ -491,7 +491,7 @@ def _auto_assert_smtlib(e: Expr, p: SMTLibPrinter, log_warn: typing.Callable[[st
 
 def _auto_infer_smtlib_types(
     *exprs: Basic,
-    symbol_table: typing.Optional[dict] = None
+    symbol_table: dict | None = None
 ) -> dict:
     # [TYPE INFERENCE RULES]
     # X is alone in an expr => X is bool

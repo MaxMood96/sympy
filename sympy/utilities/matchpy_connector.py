@@ -3,8 +3,9 @@ The objects in this module allow the usage of the MatchPy pattern matching
 library on SymPy expressions.
 """
 from __future__ import annotations
+
 import re
-from typing import List, Callable, NamedTuple, Any, Dict, TYPE_CHECKING
+from typing import Callable, NamedTuple, Any, TYPE_CHECKING
 
 from sympy.core.sympify import _sympify
 from sympy.external import import_module
@@ -266,7 +267,7 @@ class Replacer:
         self._common_constraint = common_constraints
         self._lambdify = lambdify
         self._info = info
-        self._wildcards: Dict[str, Wildcard] = {}
+        self._wildcards: dict[str, Wildcard] = {}
 
     def _get_lambda(self, lambda_str: str) -> Callable[..., Expr]:
         exec("from sympy import *")
@@ -286,8 +287,8 @@ class Replacer:
     def _get_custom_constraint_true(self, constraint_expr: Expr) -> Callable[..., Expr]:
         return self._get_custom_constraint(constraint_expr, "({}) == True")
 
-    def add(self, expr: Expr, replacement, conditions_true: List[Expr] = [],
-            conditions_nonfalse: List[Expr] = [], info: Any = None) -> None:
+    def add(self, expr: Expr, replacement, conditions_true: list[Expr] = [],
+            conditions_nonfalse: list[Expr] = [], info: Any = None) -> None:
         expr = _sympify(expr)
         replacement = _sympify(replacement)
         constraints = self._common_constraint[:]

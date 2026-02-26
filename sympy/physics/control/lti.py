@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Type
+
 from sympy import Interval, numer, Rational, solveset
 from sympy.core.add import Add
 from sympy.core.basic import Basic
@@ -405,7 +405,7 @@ def gain_margin(system):
 class LinearTimeInvariant(Basic, EvalfMixin, ABC):
     """A common class for all the Linear Time-Invariant Dynamical Systems."""
 
-    _clstype: Type
+    _clstype: type
 
     # Users should not directly interact with this class.
     def __new__(cls, *system, **kwargs):
